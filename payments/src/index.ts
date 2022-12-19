@@ -13,6 +13,7 @@ dotenv.config({ path: `${__dirname}/.env` });
 mongoose.set("strictQuery", false);
 
 const start = async () => {
+	console.log("Starting Payments");
 	if (!process.env.JWT_SECRET) {
 		throw new Error("JWT_SECRET must be defined");
 	}
