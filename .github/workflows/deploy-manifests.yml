@@ -6,9 +6,6 @@ on:
       - "master"
     paths:
       - "infra/**"
-  workflow_dispatch:
-    branches:
-      - "master"
 
 jobs:
   build:
