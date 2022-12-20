@@ -10,7 +10,6 @@ import { natsWrapper } from "./nats-wrapper";
 mongoose.set("strictQuery", false);
 
 const start = async () => {
-	console.log("Starting Tickets");
 	if (!process.env.JWT_SECRET) {
 		throw new Error("JWT_SECRET must be defined");
 	}
