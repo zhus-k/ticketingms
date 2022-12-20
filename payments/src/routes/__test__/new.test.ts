@@ -8,12 +8,6 @@ import { natsWrapper } from "../../nats-wrapper";
 import { stripe } from "../../stripe";
 import { signin } from "../../test/helpers";
 
-const STRIPE_SECRET_DEV = process.env.STRIPE_SECRET_DEV;
-
-if (!STRIPE_SECRET_DEV) {
-	throw new Error("Please set the environment variable STRIPE_SECRET_DEV");
-}
-
 it("returns 404 if order is not found", async () => {
 	await request(app)
 		.post("/api/payments")
