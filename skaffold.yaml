@@ -18,6 +18,7 @@ build:
             dest: .
       docker:
         dockerfile: Dockerfile
+        buildArgs: { "NODE_ENV": "production" }
     - image: zhusk12/tickets
       context: tickets
       sync:

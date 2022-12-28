@@ -4,7 +4,10 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "next"
+		"app:development": "next dev",
+		"app:production": "next build && next start",
+		"build": "next build",
+		"start": "npm run app:$NODE_ENV"
 	},
 	"keywords": [],
 	"author": "",
