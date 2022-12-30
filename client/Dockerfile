@@ -1,5 +1,11 @@
 FROM node:alpine
 
+ARG NODE_ENV=development
+
+ENV NODE_ENV=$NODE_ENV
+
+# RUN echo NODE_ENV is $NODE_ENV
+
 WORKDIR /app
 
 COPY package.json .
@@ -8,4 +14,4 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm" , "run" ,"dev"]
+CMD npm run start
