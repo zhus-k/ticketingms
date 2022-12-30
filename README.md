@@ -26,6 +26,7 @@ Data synchronization across microservices is achieved through an event bus using
 * [mongodb-memory-server to mock MongoDB in unit tests](https://github.com/nodkz/mongodb-memory-server)
 
 ## Other Technologies
+* GitHub workflows
 * [Docker](https://www.docker.com/)
 * [Kubernetes for automating deployments](https://kubernetes.io/)
 * [Skaffold for simplifying Kubernetes deployments in development](https://skaffold.dev/)
