@@ -4,7 +4,7 @@ import {
 	Listener,
 	OrderStatus,
 	Subjects,
-} from "@zjs-tix/common";
+} from "common";
 import { Message } from "node-nats-streaming";
 import { Order } from "../../models/order";
 import { OrderCancelledPublisher } from "../publishers/order-cancelled-publisher";

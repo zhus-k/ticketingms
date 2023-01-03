@@ -1,4 +1,4 @@
-import { requireAuth } from "@zjs-tix/common";
+import { requireAuth } from "common";
 import express, { Request, Response } from "express";
 import { Order } from "../models/order";
 

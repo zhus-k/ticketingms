@@ -1,8 +1,4 @@
-import {
-	NotAuthorizedError,
-	NotFoundError,
-	requireAuth,
-} from "@zjs-tix/common";
+import { NotAuthorizedError, NotFoundError, requireAuth } from "common";
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import mongoose from "mongoose";

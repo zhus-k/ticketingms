@@ -1,9 +1,4 @@
-import {
-	Listener,
-	NotFoundError,
-	OrderCreatedEvent,
-	Subjects,
-} from "@zjs-tix/common";
+import { Listener, NotFoundError, OrderCreatedEvent, Subjects } from "common";
 import { Message } from "node-nats-streaming";
 import { Ticket } from "../../models/ticket";
 import { TicketUpdatedPublisher } from "../publishers/ticket-updated-publisher";

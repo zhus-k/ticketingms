@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import { BadRequestError, validateRequest } from "@zjs-tix/common";
+import { BadRequestError, validateRequest } from "common";
 import jwt from "jsonwebtoken";
 
 import { User } from "../models/user";

@@ -5,7 +5,7 @@ import {
 	OrderStatus,
 	requireAuth,
 	validateRequest,
-} from "@zjs-tix/common";
+} from "common";
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import { Ticket } from "../models/ticket";

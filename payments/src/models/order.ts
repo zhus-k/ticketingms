@@ -1,4 +1,4 @@
-import { OrderStatus } from "@zjs-tix/common";
+import { OrderStatus } from "common";
 import mongoose from "mongoose";
 
 interface OrderAttrs {

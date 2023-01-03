@@ -1,5 +1,5 @@
 import express from "express";
-import { currentUser } from "@zjs-tix/common";
+import { currentUser } from "common";
 
 const router = express.Router();
 

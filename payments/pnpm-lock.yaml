@@ -7,7 +7,7 @@ specifiers:
   '@types/jsonwebtoken': ^8.5.9
   '@types/node': ^18.11.15
   '@types/supertest': ^2.0.12
-  '@zjs-tix/common': ^1.0.11
+  common: link:..\common-ts
   cookie-session: ^2.0.0
   dotenv: ^16.0.3
   express: ^4.18.2
@@ -28,7 +28,7 @@ dependencies:
   '@types/cookie-session': 2.0.44
   '@types/express': 4.17.15
   '@types/jsonwebtoken': 8.5.9
-  '@zjs-tix/common': 1.0.11
+  common: link:../common-ts
   cookie-session: 2.0.0
   dotenv: 16.0.3
   express: 4.18.2
@@ -1634,21 +1634,6 @@ packages:
     dependencies:
       '@types/yargs-parser': 21.0.0
     dev: true
-
-  /@zjs-tix/common/1.0.11:
-    resolution: {integrity: sha512-jOJTRoCsSHvuGHZPDBTqcMm+XSHnYbuf+8RR8iObhV14rLol50nD7e2jHBrEjjsjNtMJC2SfXIcNwJAeJjXlXQ==}
-    dependencies:
-      '@types/cookie-session': 2.0.44
-      '@types/express': 4.17.15
-      '@types/jsonwebtoken': 8.5.9
-      cookie-session: 2.0.0
-      express: 4.18.2
-      express-validator: 6.14.2
-      jsonwebtoken: 8.5.1
-      node-nats-streaming: 0.3.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /accepts/1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}

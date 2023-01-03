@@ -2,7 +2,7 @@ import express from "express";
 import "express-async-errors";
 import cookieSession from "cookie-session";
 
-import { errorHandler, NotFoundError, currentUser } from "@zjs-tix/common";
+import { errorHandler, NotFoundError, currentUser } from "common";
 import { createChargeRouter } from "./routes/new";
 
 const app = express();
