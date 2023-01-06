@@ -2,7 +2,8 @@ name: deploy-expiration
 
 on:
   push:
-    branches: ["master"]
+    branches:
+      - "main"
     paths:
       - "expiration/**"
 

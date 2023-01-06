@@ -3,11 +3,11 @@ kind: Ingress
 metadata:
   name: ingress-service
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
+  ingressClassName: nginx
   rules:
-    - host: www.ppaxit.click
+    - host: ppaxit.click
       http:
         paths:
           - path: /api/payments/?(.*)
@@ -51,7 +51,7 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
-    service.beta.kubernetes.io/do-loadbalancer-hostname: www.ppaxit.click
+    service.beta.kubernetes.io/do-loadbalancer-hostname: ppaxit.click
   labels:
     helm.sh/chart: ingress-nginx-2.0.3
     app.kubernetes.io/name: ingress-nginx
@@ -65,11 +65,13 @@ spec:
   type: LoadBalancer
   externalTrafficPolicy: Local
   ports:
-    - name: http
+    - appProtocol: http
+      name: http
       port: 80
       protocol: TCP
       targetPort: http
-    - name: https
+    - appProtocol: https
+      name: https
       port: 443
       protocol: TCP
       targetPort: https

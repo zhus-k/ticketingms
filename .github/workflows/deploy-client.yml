@@ -2,7 +2,8 @@ name: deploy-client
 
 on:
   push:
-    branches: ["master"]
+    branches:
+      - "main"
     paths:
       - "client/**"
 
