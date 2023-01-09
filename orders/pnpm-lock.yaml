@@ -7,7 +7,7 @@ specifiers:
   '@types/jsonwebtoken': ^8.5.9
   '@types/node': ^18.11.15
   '@types/supertest': ^2.0.12
-  common: link:..\common-ts
+  '@zjs-tix/ticketingms-common-ts': ^1.0.13
   cookie-session: ^2.0.0
   express: ^4.18.2
   express-async-errors: ^3.1.1
@@ -26,7 +26,7 @@ dependencies:
   '@types/cookie-session': 2.0.44
   '@types/express': 4.17.15
   '@types/jsonwebtoken': 8.5.9
-  common: link:../common-ts
+  '@zjs-tix/ticketingms-common-ts': 1.0.13
   cookie-session: 2.0.0
   express: 4.18.2
   express-async-errors: 3.1.1_express@4.18.2
@@ -1630,6 +1630,21 @@ packages:
     dependencies:
       '@types/yargs-parser': 21.0.0
     dev: true
+
+  /@zjs-tix/ticketingms-common-ts/1.0.13:
+    resolution: {integrity: sha512-5ARXstr179HLq9CVoGzRUD5nWt3dLJf8Fj2TDlIj3k+fxVCSXAvX7P50PkCLfPLc5vCJkf45DJ27xy/LIo7kzA==}
+    dependencies:
+      '@types/cookie-session': 2.0.44
+      '@types/express': 4.17.15
+      '@types/jsonwebtoken': 8.5.9
+      cookie-session: 2.0.0
+      express: 4.18.2
+      express-validator: 6.14.2
+      jsonwebtoken: 8.5.1
+      node-nats-streaming: 0.3.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
 
   /accepts/1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
