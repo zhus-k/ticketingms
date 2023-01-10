@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEventHandler, useState } from "react";
 import Router from "next/router";
 import useRequest from "../../hooks/use-request";
 
@@ -14,7 +14,7 @@ export default () => {
 		},
 	});
 
-	const onSubmit = async (event) => {
+	const onSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
 		event.preventDefault();
 
 		doRequest();
@@ -24,8 +24,9 @@ export default () => {
 		<form onSubmit={onSubmit}>
 			<h1>Sign Up</h1>
 			<div className="form-group">
-				<label htmlFor="">Email Address</label>
+				<label htmlFor="email">Email Address</label>
 				<input
+					id="email"
 					type="text"
 					className="form-control"
 					value={email}
@@ -33,8 +34,9 @@ export default () => {
 				/>
 			</div>
 			<div className="form-group">
-				<label htmlFor="">Password</label>
+				<label htmlFor="password">Password</label>
 				<input
+					id="password"
 					type="password"
 					className="form-control"
 					value={password}

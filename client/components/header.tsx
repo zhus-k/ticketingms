@@ -1,6 +1,8 @@
 import Link from "next/link";
 
-const Header = ({ currentUser }) => {
+import { _Props } from "../interface/appProps";
+
+const Header = ({ currentUser }: _Props): JSX.Element => {
 	const links = [
 		!currentUser && { label: "Sign Up", href: "/auth/signup" },
 		!currentUser && { label: "Sign In", href: "/auth/signin" },
@@ -9,7 +11,8 @@ const Header = ({ currentUser }) => {
 		currentUser && { label: "Sign Out", href: "/auth/signout" },
 	]
 		.filter((linkConfig) => linkConfig)
-		.map(({ label, href }) => {
+		// rome-ignore lint/suspicious/noExplicitAny: <explanation>
+		.map(({ label, href }: any) => {
 			return (
 				<li key={href} className="nav-item">
 					<Link href={href} className="nav-link">

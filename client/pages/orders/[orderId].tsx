@@ -1,9 +1,18 @@
+import { AxiosInstance } from "axios";
+import { NextPageContext } from "next";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import StripeCheckout from "react-stripe-checkout";
 import useRequest from "../../hooks/use-request";
+import { User } from "../../interface/User";
+import { Order } from "../../interface/Order";
 
-const OrderShow = ({ order, currentUser }) => {
+interface OwnProps {
+	order: Order;
+	currentUser: User;
+}
+
+const OrderShow = ({ order, currentUser }: OwnProps) => {
 	const [timeLeft, setTimeLeft] = useState(0);
 
 	const { doRequest, errors } = useRequest({
@@ -15,7 +24,7 @@ const OrderShow = ({ order, currentUser }) => {
 
 	useEffect(() => {
 		const findTimeLeft = () => {
-			const msLeft = new Date(order.expiresAt) - new Date();
+			const msLeft = new Date(order.expiresAt).getTime() - new Date().getTime();
 
 			setTimeLeft(Math.round(msLeft / 1000));
 		};
@@ -37,7 +46,7 @@ const OrderShow = ({ order, currentUser }) => {
 			<StripeCheckout
 				token={({ id }) => doRequest({ token: id })}
 				stripeKey="pk_test_51MFOCNH7cz8U3cM3Zr4chZQbvOcGcPyuF8V5zLy3JrdDjoBbrGUMYUuEY7CP5zNswLPV1QdzB9TXJFrDqD92PPHe00SjPHzM7K"
-				amount={order.ticket.price * 100}
+				amount={parseFloat(order.ticket.price) * 100}
 				email={currentUser.email}
 			/>
 			{errors}
@@ -45,7 +54,10 @@ const OrderShow = ({ order, currentUser }) => {
 	);
 };
 
-OrderShow.getInitialProps = async (context, client) => {
+OrderShow.getInitialProps = async (
+	context: NextPageContext,
+	client: AxiosInstance,
+) => {
 	const { orderId } = context.query;
 
 	const { data } = await client.get(`/api/orders/${orderId}`);

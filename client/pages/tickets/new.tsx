@@ -1,20 +1,21 @@
-import { useState } from "react";
 import Router from "next/router";
+import { FormEventHandler, useState } from "react";
 import useRequest from "../../hooks/use-request";
+import { Ticket } from "../../interface/Ticket";
 
-const NewTicket = () => {
+const NewTicket = (): JSX.Element => {
 	const [title, setTitle] = useState("");
 	const [price, setPrice] = useState("");
 	const { doRequest, errors } = useRequest({
 		url: "/api/tickets",
 		method: "post",
 		body: { title, price },
-		onSuccess: (ticket) => {
+		onSuccess: (ticket: Ticket) => {
 			Router.push("/");
 		},
 	});
 
-	const onSubmit = (event) => {
+	const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
 		event.preventDefault();
 
 		doRequest();
@@ -35,8 +36,9 @@ const NewTicket = () => {
 			<h1>Create a Ticket</h1>
 			<form onSubmit={onSubmit}>
 				<div className="form-group">
-					<label htmlFor="">Title</label>
+					<label htmlFor="title">Title</label>
 					<input
+						id="title"
 						className="form-control"
 						type="text"
 						value={title}
@@ -44,8 +46,9 @@ const NewTicket = () => {
 					/>
 				</div>
 				<div className="form-group">
-					<label htmlFor="">Price</label>
+					<label htmlFor="price">Price</label>
 					<input
+						id="price"
 						className="form-control"
 						type="text"
 						value={price}
