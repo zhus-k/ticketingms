@@ -1,4 +1,4 @@
-import { Subjects, TicketCreatedEvent } from "common";
+import { Subjects, TicketCreatedEvent } from "@zjs-tix/ticketingms-common-ts";
 import mongoose from "mongoose";
 import { Message } from "node-nats-streaming";
 import { Ticket } from "../../../models/ticket";

@@ -6,7 +6,7 @@ import {
 	NotAuthorizedError,
 	requireAuth,
 	BadRequestError,
-} from "common";
+} from "@zjs-tix/ticketingms-common-ts";
 import { Ticket } from "../models/ticket";
 import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
 import { natsWrapper } from "../nats-wrapper";

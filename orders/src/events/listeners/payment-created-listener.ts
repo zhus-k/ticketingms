@@ -4,7 +4,7 @@ import {
 	OrderStatus,
 	PaymentCreatedEvent,
 	Subjects,
-} from "common";
+} from "@zjs-tix/ticketingms-common-ts";
 import { Message } from "node-nats-streaming";
 import { Order } from "../../models/order";
 import { queueGroupName } from "./queue-group-name";

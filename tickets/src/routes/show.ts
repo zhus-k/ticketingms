@@ -1,4 +1,4 @@
-import { NotFoundError } from "common";
+import { NotFoundError } from "@zjs-tix/ticketingms-common-ts";
 import express, { Request, Response } from "express";
 import { Ticket } from "../models/ticket";
 

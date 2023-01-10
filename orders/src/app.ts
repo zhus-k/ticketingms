@@ -1,7 +1,7 @@
 import express from "express";
 import "express-async-errors";
 import cookieSession from "cookie-session";
-import { errorHandler, NotFoundError, currentUser } from "common";
+import { errorHandler, NotFoundError, currentUser } from "@zjs-tix/ticketingms-common-ts";
 
 import { deleteOrderRouter } from "./routes/delete";
 import { indexOrderRouter } from "./routes";

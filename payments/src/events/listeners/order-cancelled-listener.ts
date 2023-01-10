@@ -1,4 +1,4 @@
-import { Listener, OrderCancelledEvent, OrderStatus, Subjects } from "common";
+import { Listener, OrderCancelledEvent, OrderStatus, Subjects } from "@zjs-tix/ticketingms-common-ts";
 import { Message } from "node-nats-streaming";
 import { Order } from "../../models/order";
 import { queueGroupName } from "./queueGroupName";

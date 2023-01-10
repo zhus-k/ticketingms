@@ -1,5 +1,5 @@
 import { Message } from "node-nats-streaming";
-import { Listener, TicketCreatedEvent, Subjects } from "common";
+import { Listener, TicketCreatedEvent, Subjects } from "@zjs-tix/ticketingms-common-ts";
 import { Ticket } from "../../models/ticket";
 import { queueGroupName } from "./queue-group-name";
 

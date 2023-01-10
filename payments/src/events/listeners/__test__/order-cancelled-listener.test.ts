@@ -1,4 +1,4 @@
-import { OrderCancelledEvent, OrderStatus } from "common";
+import { OrderCancelledEvent, OrderStatus } from "@zjs-tix/ticketingms-common-ts";
 import mongoose from "mongoose";
 import { Message } from "node-nats-streaming";
 import { Order } from "../../../models/order";

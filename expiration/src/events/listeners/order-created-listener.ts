@@ -1,4 +1,4 @@
-import { Listener, OrderCreatedEvent, Subjects } from "common";
+import { Listener, OrderCreatedEvent, Subjects } from "@zjs-tix/ticketingms-common-ts";
 import { Message } from "node-nats-streaming";
 import { expirationQueue } from "../../queues/expiration-queue";
 import { queueGroupName } from "./queueGroupName";

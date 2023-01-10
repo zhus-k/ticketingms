@@ -1,4 +1,4 @@
-import { OrderStatus } from "common";
+import { OrderStatus } from "@zjs-tix/ticketingms-common-ts";
 import mongoose from "mongoose";
 import request from "supertest";
 import { app } from "../../app";

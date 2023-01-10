@@ -1,4 +1,4 @@
-import { requireAuth, validateRequest } from "common";
+import { requireAuth, validateRequest } from "@zjs-tix/ticketingms-common-ts";
 import { body } from "express-validator";
 import express, { Request, Response } from "express";
 

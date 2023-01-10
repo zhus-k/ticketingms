@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { OrderStatus } from "common";
+import { OrderStatus } from "@zjs-tix/ticketingms-common-ts";
 import { TicketDoc } from "./ticket";
 
 export { OrderStatus };

@@ -3,7 +3,7 @@ import {
 	NotFoundError,
 	OrderStatus,
 	requireAuth,
-} from "common";
+} from "@zjs-tix/ticketingms-common-ts";
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 import mongoose from "mongoose";

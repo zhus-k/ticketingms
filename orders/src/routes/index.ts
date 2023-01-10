@@ -1,4 +1,4 @@
-import { requireAuth } from "common";
+import { requireAuth } from "@zjs-tix/ticketingms-common-ts";
 import express, { Request, Response } from "express";
 import { Order } from "../models/order";
 

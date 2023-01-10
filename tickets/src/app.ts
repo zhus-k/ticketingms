@@ -4,7 +4,7 @@ import cookieSession from "cookie-session";
 import { createTicketRouter } from "./routes/new";
 import { showTicketRouter } from "./routes/show";
 
-import { errorHandler, NotFoundError, currentUser } from "common";
+import { errorHandler, NotFoundError, currentUser } from "@zjs-tix/ticketingms-common-ts";
 import { indexTicketRouter } from "./routes";
 import { updateTicketRouter } from "./routes/update";
 
