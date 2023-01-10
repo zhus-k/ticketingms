@@ -10,8 +10,8 @@ build:
             dest: .
       docker:
         dockerfile: Dockerfile
-    - image: zhusk12/client
-      context: client
+    - image: zhusk12/web
+      context: web
       sync:
         manual:
           - src: "**/*.js"
