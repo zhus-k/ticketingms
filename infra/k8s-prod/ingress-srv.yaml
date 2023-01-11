@@ -42,7 +42,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: client-srv
+                name: web-srv
                 port:
                   number: 3000
 ---
