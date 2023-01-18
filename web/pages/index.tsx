@@ -1,20 +1,20 @@
-import { AxiosInstance } from "axios";
-import { AppContext } from "next/app";
-import Link from "next/link";
-import { _Props } from "../interface/appProps";
-import { User } from "../interface/User";
+import Layout from "../components/Layout";
 import { Ticket } from "../interface/Ticket";
+import { selectTicketsList } from "../selectors/tickets";
+import { fetchTickets } from "../slices/tickets";
+import { wrapper } from "../store";
+import { NextPageWithLayout } from "./_app";
+import Link from "next/link";
+import { useSelector } from "react-redux";
 
-interface OwnProps extends _Props {
-	tickets: Ticket[];
-}
+const LandingPage: NextPageWithLayout = () => {
+	const tickets = useSelector(selectTicketsList);
 
-const LandingPage = ({ tickets }: OwnProps): JSX.Element => {
-	const ticketList = tickets.map(
+	const ticketList = tickets?.map(
 		(ticket: Ticket): JSX.Element => (
 			<tr key={ticket.id}>
 				<td>{ticket.title}</td>
-				<td>{ticket.price}</td>
+				<td>${Number(ticket.price).toFixed(2)}</td>
 				<td>
 					<Link href="/tickets/ticketId" as={`/tickets/${ticket.id}`}>
 						View
@@ -25,30 +25,33 @@ const LandingPage = ({ tickets }: OwnProps): JSX.Element => {
 	);
 
 	return (
-		<div>
-			<h1>Tickets</h1>
-			<table className="table">
-				<thead>
-					<tr>
-						<th>Title</th>
-						<th>Price</th>
-						<th>Link</th>
-					</tr>
-				</thead>
-				<tbody>{ticketList}</tbody>
-			</table>
+		<div className="flex pt-4 justify-center">
+			<div className="p-4 rounded shadow-md text-center w-full md:max-w-md">
+				<h1 className="text-lg font-bold">Tickets</h1>
+				<table className="table w-full md:max-w-screen-sm md:rounded border-slate-100 p-2 pb-4 border-2 border-separate alternate">
+					<thead>
+						<tr>
+							<th>Item</th>
+							<th>Price</th>
+							<th>Link</th>
+						</tr>
+					</thead>
+					<tbody>{ticketList}</tbody>
+				</table>
+			</div>
 		</div>
 	);
 };
 
-LandingPage.getInitialProps = async (
-	context: AppContext,
-	client: AxiosInstance,
-	currentUser: User,
-): Promise<OwnProps> => {
-	const { data } = await client.get("/api/tickets");
-
-	return { tickets: data };
+LandingPage.getLayout = function (page) {
+	return <Layout>{page}</Layout>;
 };
+
+LandingPage.getInitialProps = wrapper.getInitialPageProps((store) =>
+	async (context) => {
+		await store.dispatch(fetchTickets());
+
+		return {};
+	});
 
 export default LandingPage;

@@ -3,6 +3,7 @@ FROM node:alpine
 ARG NODE_ENV=development
 
 ENV NODE_ENV=$NODE_ENV
+ENV HOST=cluster
 
 # RUN echo NODE_ENV is $NODE_ENV
 

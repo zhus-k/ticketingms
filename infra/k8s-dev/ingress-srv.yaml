@@ -4,6 +4,10 @@ metadata:
   name: ingress-service
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "localhost"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:
@@ -38,10 +42,10 @@ spec:
                 name: orders-srv
                 port:
                   number: 3000
-          - path: /?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: web-srv
-                port:
-                  number: 3000
+          # - path: /?(.*)
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: web-srv
+          #       port:
+          #         number: 3000

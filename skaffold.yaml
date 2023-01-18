@@ -10,15 +10,6 @@ build:
             dest: .
       docker:
         dockerfile: Dockerfile
-    - image: zhusk12/web
-      context: web
-      sync:
-        manual:
-          - src: "**/*.js"
-            dest: .
-      docker:
-        dockerfile: Dockerfile
-        buildArgs: { "NODE_ENV": "dev" }
     - image: zhusk12/tickets
       context: tickets
       sync:
@@ -51,11 +42,17 @@ build:
             dest: .
       docker:
         dockerfile: Dockerfile
+    # - image: zhusk12/web
+    #   context: web
+    #   sync:
+    #     manual:
+    #       - src: src/**/*.ts
+    #         dest: .
+    #   docker:
+    #     dockerfile: Dockerfile
   local:
     push: false
 manifests:
   rawYaml:
-    - ./infra/k8s/*
+    - ./infra/k8s/backend/*
     - ./infra/k8s-dev/*
-deploy:
-  kubectl: {}
