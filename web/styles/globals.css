@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    padding: theme(spacing.1);
+  }
+
+  .btn-w-icons {
+    display: flex;
+    justify-content: center;
+    gap: theme(spacing.1);
+  }
+
+  .btn-primary {
+    color: theme(textColor.white);
+    background-color: theme(backgroundColor.sky.400);
+  }
+
+  .table thead,
+  tbody {
+  }
+  .table thead,
+  .table tbody {
+  }
+  .table thead tr,
+  .table tbody tr {
+  }
+  .table thead tr th,
+  .table tbody tr td {
+  }
+  .table.alternate tbody tr:nth-child(even) {
+    backdrop-filter: theme(backdropBrightness.95);
+  }
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}

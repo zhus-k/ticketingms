@@ -3,27 +3,32 @@ import axios, { Axios, AxiosResponse } from "axios";
 
 type AxiosRESTMethods<D> = {
 	// rome-ignore lint/suspicious/noExplicitAny: <explanation>
-	[K in keyof Axios]: Axios[K] extends (...args: any[]) => Promise<D> ? K : never;
+	[K in keyof Axios]: Axios[K] extends (...args: any[]) => Promise<D>
+		? K
+		: never;
 }[keyof Axios];
 
-function func<RequestBody, ResponseData, Method extends AxiosRESTMethods<ResponseData>>({
+function func<ResponseData>({
 	url,
 	method,
-	body,
+	body = {},
 	onSuccess,
+	onError,
 }: {
 	url: string;
-	method: Method;
+	method: AxiosRESTMethods<ResponseData>;
 	// rome-ignore lint/suspicious/noExplicitAny: <explanation>
-	body: RequestBody;
-	onSuccess: (args: ResponseData) => void;
+	body?: any;
+	onSuccess?: (args: ResponseData) => void;
+	// rome-ignore lint/suspicious/noExplicitAny: <explanation>
+	onError?: (err: any) => void;
 }) {
-	const [errors, setErrors] = useState<JSX.Element | null>(null);
+	// rome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const [errors, setErrors] = useState<any>(null);
 
 	const doRequest = async (props = {}) => {
 		try {
 			setErrors(null);
-			// rome-ignore lint/suspicious/noExplicitAny: <explanation>
 			const response: AxiosResponse<ResponseData> = await axios[method](url, {
 				...body,
 				...props,
@@ -34,18 +39,12 @@ function func<RequestBody, ResponseData, Method extends AxiosRESTMethods<Respons
 			}
 
 			return response.data;
-			// rome-ignore lint/suspicious/noExplicitAny: <explanation>
-		} catch (err: any) {
-			setErrors(
-				<div className="alert alert-danger">
-					<h4>Oops...</h4>
-					<ul className="my-0">
-						{err.response.data.errors.map((err: Error) => (
-							<li key={err.message}>{err.message}</li>
-						))}
-					</ul>
-				</div>,
-			);
+		} catch (err) {
+			setErrors(err);
+
+			if (onError) {
+				onError(err);
+			}
 		}
 	};
 

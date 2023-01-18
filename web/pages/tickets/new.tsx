@@ -1,7 +1,9 @@
-import Router from "next/router";
-import { FormEventHandler, useState } from "react";
+import { FormCard } from "../../components/FormCard";
+import { ErrorCmp } from "../../components/Error";
 import useRequest from "../../hooks/use-request";
 import { Ticket } from "../../interface/Ticket";
+import Router from "next/router";
+import { FormEventHandler, useState } from "react";
 
 const NewTicket = (): JSX.Element => {
 	const [title, setTitle] = useState("");
@@ -13,6 +15,8 @@ const NewTicket = (): JSX.Element => {
 		onSuccess: (ticket: Ticket) => {
 			Router.push("/");
 		},
+		// rome-ignore lint/suspicious/noExplicitAny: <explanation>
+		onError: (error: any) => {},
 	});
 
 	const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
@@ -32,34 +36,36 @@ const NewTicket = (): JSX.Element => {
 	};
 
 	return (
-		<div>
-			<h1>Create a Ticket</h1>
-			<form onSubmit={onSubmit}>
-				<div className="form-group">
-					<label htmlFor="title">Title</label>
+		<FormCard>
+			<h2 className="text-2xl font-semibold text-center">List a Ticket</h2>
+			<form onSubmit={onSubmit} className="flex flex-col gap-4">
+				<div className="flex justify-between gap-2 items-center">
+					<label htmlFor="title">Item</label>
 					<input
 						id="title"
-						className="form-control"
+						className="form-input"
 						type="text"
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
 					/>
 				</div>
-				<div className="form-group">
+				<div className="flex justify-between gap-2 items-center">
 					<label htmlFor="price">Price</label>
 					<input
 						id="price"
-						className="form-control"
+						className="form-input"
 						type="text"
 						value={price}
 						onChange={(e) => setPrice(e.target.value)}
 						onBlur={onBlur}
 					/>
 				</div>
-				{errors}
-				<button className="btn btn-primary">Submit</button>
+				{errors && <ErrorCmp errors={errors} />}
+				<button type="submit" className="btn btn-primary">
+					List
+				</button>
 			</form>
-		</div>
+		</FormCard>
 	);
 };
 

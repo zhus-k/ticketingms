@@ -1,49 +1,45 @@
-import "bootstrap/dist/css/bootstrap.css";
+import { fetchCurrentUser } from "../slices/auth";
+import { wrapper } from "../store";
+import "../styles/globals.css";
 import { NextPage } from "next";
-import { AppContext, AppProps as _AppProps } from "next/app";
-import buildClient from "../api/buildClient";
-import Header from "../components/header";
-import { User } from "../interface/User";
+import App, { AppProps } from "next/app";
+import { ReactElement, ReactNode, useEffect } from "react";
+import { Provider } from "react-redux";
 
-interface OwnProps extends _AppProps {
-	Component: NextPage;
-	// rome-ignore lint/suspicious/noExplicitAny: <explanation>
-	pageProps: any;
-	currentUser?: User;
-}
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+	getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+	Component: NextPageWithLayout;
+};
 
 const AppComponent = ({
 	Component,
-	pageProps,
-	currentUser,
-}: OwnProps): JSX.Element => {
+	...rest
+}: Omit<AppPropsWithLayout, "pageProps">) => {
+	const getLayout = Component.getLayout ?? ((page: ReactElement) => page);
+
+	const { store, props } = wrapper.useWrappedStore(rest);
+
+	useEffect(() => {
+		store.dispatch(fetchCurrentUser());
+	}, []);
+
 	return (
-		<div>
-			<Header currentUser={currentUser} />
-			<div className="container">
-				<Component {...pageProps} currentUser={currentUser} />
-			</div>
-		</div>
+		<Provider store={store}>
+			{getLayout(<Component {...props.pageProps} />)}
+		</Provider>
 	);
 };
 
-AppComponent.getInitialProps = async (
-	appContext: AppContext,
-): Promise<OwnProps> => {
-	const client = buildClient(appContext.ctx);
-	const { data } = await client.get("/api/users/currentuser");
-
-	let pageProps = {};
-	if (appContext.Component.getInitialProps) {
-		// rome-ignore lint/suspicious/noExplicitAny: <explanation>
-		pageProps = await (appContext.Component as any).getInitialProps(
-			appContext.ctx,
-			client,
-			data.currentUser,
-		);
-	}
-
-	return { pageProps, ...data };
-};
+AppComponent.getInitialProps = wrapper.getInitialAppProps((store) =>
+	async (appContext) => {
+		return {
+			pageProps: {
+				...(await App.getInitialProps(appContext)).pageProps,
+			},
+		};
+	});
 
 export default AppComponent;
