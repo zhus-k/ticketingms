@@ -1,7 +1,23 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+  namespace: ticketingms
+spec:
+  selector:
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-depl
+  namespace: ticketingms
 spec:
   replicas: 1
   selector:
@@ -15,24 +31,20 @@ spec:
       containers:
         - name: auth
           image: zhusk12/auth
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
           env:
             - name: MONGO_URI
-              value: 'mongodb://auth-mongo-srv:27017/auth'
+              value: "mongodb://auth-mongo-0.auth-mongo-srv,auth-mongo-1.auth-mongo-srv,auth-mongo-2.auth-mongo-srv:27017/auth"
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_SECRET
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: auth-srv
-spec:
-  selector:
-    app: auth
-  ports:
-    - name: auth
-      protocol: TCP
-      port: 3000
-      targetPort: 3000
+

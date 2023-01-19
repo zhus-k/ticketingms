@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tickets-mongo-srv
+  namespace: ticketingms
+spec:
+  selector:
+    app: tickets-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tickets-mongo
+  namespace: ticketingms
+spec:
+  selector:
+    matchLabels:
+      app: tickets-mongo
+  serviceName: tickets-mongo-srv
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: tickets-mongo
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: tickets-mongo
+          image: mongo
+          args:
+            - mongod
+            - "--replSet"
+            - rs0
+            - "--bind_ip_all"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: tickets-mongo-persistent-storage
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: tickets-mongo-persistent-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: .5Gi
+---
+

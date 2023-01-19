@@ -1,7 +1,23 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-srv
+  namespace: ticketingms
+spec:
+  selector:
+    app: payments
+  ports:
+    - name: payments
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payments-depl
+  namespace: ticketingms
 spec:
   replicas: 1
   selector:
@@ -15,6 +31,13 @@ spec:
       containers:
         - name: payments
           image: zhusk12/payments
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
@@ -25,7 +48,7 @@ spec:
             - name: NATS_CLUSTER_ID
               value: ticketing
             - name: MONGO_URI
-              value: "mongodb://payments-mongo-srv:27017/payments"
+              value: "mongodb://payments-mongo-0.payments-mongo-srv,payments-mongo-1.payments-mongo-srv,payments-mongo-2.payments-mongo-srv:27017/payments"
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -37,15 +60,4 @@ spec:
                   name: stripe-secret
                   key: STRIPE_SECRET
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: payments-srv
-spec:
-  selector:
-    app: payments
-  ports:
-    - name: payments
-      protocol: TCP
-      port: 3000
-      targetPort: 3000
+

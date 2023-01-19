@@ -1,25 +1,9 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: expiration-redis-depl
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: expiration-redis
-  template:
-    metadata:
-      labels:
-        app: expiration-redis
-    spec:
-      containers:
-        - name: expiration-redis
-          image: redis
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: expiration-redis-srv
+  namespace: ticketingms
 spec:
   selector:
     app: expiration-redis
@@ -28,3 +12,44 @@ spec:
       protocol: TCP
       port: 6379
       targetPort: 6379
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: expiration-redis-depl
+  namespace: ticketingms
+spec:
+  selector:
+    matchLabels:
+      app: expiration-redis
+  serviceName: expiration-redis-srv
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: expiration-redis
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: expiration-redis
+          image: redis
+          args:
+            -
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  volumeClaimTemplates:
+    - metadata:
+        name: expiration-redis-persistent-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: .1Gi
+---
+

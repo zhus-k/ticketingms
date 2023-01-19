@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-mongo-srv
+  namespace: ticketingms
+spec:
+  selector:
+    app: orders-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orders-mongo
+  namespace: ticketingms
+spec:
+  selector:
+    matchLabels:
+      app: orders-mongo
+  serviceName: orders-mongo-srv
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: orders-mongo
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: orders-mongo
+          image: mongo
+          args:
+            - mongod
+            - "--replSet"
+            - rs0
+            - "--bind_ip_all"
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: orders-mongo-persistent-storage
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: orders-mongo-persistent-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: .5Gi
+---
+
