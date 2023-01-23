@@ -1,15 +1,10 @@
 import { Message, Stan } from "node-nats-streaming";
-import { Subjects } from "./subjects";
+import { Event } from "./base-event";
 
-interface Event {
-	subject: Subjects;
-	data: unknown;
-}
-
-export abstract class Listener<T extends Event> {
+export abstract class Listener<T extends Event, D = T["data"]> {
 	abstract subject: T["subject"];
 	abstract queueGroupName: string;
-	abstract onMessage(data: T["data"], msg: Message): void;
+	abstract onMessage(data: D, msg: Message): void;
 	protected client: Stan;
 	protected ackWait = 5 * 1000;
 
@@ -33,8 +28,8 @@ export abstract class Listener<T extends Event> {
 			this.subscriptionOptions(),
 		);
 
-		subscription.on("message", (message: Message) => {
-			console.log(`message received: ${this.subject} / ${this.queueGroupName}`);
+		subscription.on("message", (message: Message): void => {
+			console.log(`Message received: ${this.subject} / ${this.queueGroupName}`);
 
 			const parsedData = this.parseMessage(message);
 
@@ -42,7 +37,7 @@ export abstract class Listener<T extends Event> {
 		});
 	}
 
-	parseMessage(message: Message): string {
+	parseMessage(message: Message): D {
 		const data = message.getData();
 		return typeof message === "string"
 			? JSON.stringify(data)
