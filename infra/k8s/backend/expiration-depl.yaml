@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,4 +27,5 @@ spec:
               value: ticketing
             - name: REDIS_HOST
               value: expiration-redis-srv
+---
 

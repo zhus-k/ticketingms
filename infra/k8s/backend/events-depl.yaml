@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-srv
+  name: events-srv
 spec:
   selector:
-    app: auth
+    app: events
   ports:
-    - name: auth
+    - name: events
       protocol: TCP
       port: 3000
       targetPort: 3000
@@ -15,23 +15,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-depl
+  name: events-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth
+      app: events
   template:
     metadata:
       labels:
-        app: auth
+        app: events
     spec:
       containers:
-        - name: auth
-          image: zhusk12/auth
+        - name: events
+          image: zhusk12/events
           env:
             - name: MONGO_URI
-              value: "mongodb://auth-mongo-srv:27017/auth"
+              value: "mongodb://events-mongo-srv:27017/events"
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

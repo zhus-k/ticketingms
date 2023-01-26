@@ -1,3 +1,4 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -42,6 +43,13 @@ spec:
                 name: orders-srv
                 port:
                   number: 3000
+          - path: /api/events/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: events-srv
+                port:
+                  number: 3000
           # - path: /?(.*)
           #   pathType: Prefix
           #   backend:
@@ -49,3 +57,5 @@ spec:
           #       name: web-srv
           #       port:
           #         number: 3000
+---
+
