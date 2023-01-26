@@ -18,7 +18,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@zjs-tix/ticketingms-common-ts": "^1.0.13",
+		"@zjs-tix/ticketingms-common-ts": "1.0.13",
 		"bull": "^4.10.2",
 		"node-nats-streaming": "^0.3.2",
 		"ts-node-dev": "^2.0.0",
