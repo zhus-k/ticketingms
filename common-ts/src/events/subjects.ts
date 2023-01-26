@@ -1,5 +1,6 @@
 export enum Subjects {
 	EventCreated = "event:created",
+	EventCancelled = "event:cancelled",
 	EventUpdated = "event:updated",
 
 	TicketCreated = "ticket:created",
@@ -7,7 +8,8 @@ export enum Subjects {
 
 	OrderCreated = "order:created",
 	OrderCancelled = "order:cancelled",
-	OrderExpired = "order:complete",
+
+	ExpirationComplete = "expiration:complete",
 
 	PaymentCreated = "payment:created",
 }
