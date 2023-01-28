@@ -1,29 +1,27 @@
-import mongoose from "mongoose";
 import { Order, OrderStatus } from "./order";
+import { HydratedDocument, Model, Schema, model } from "mongoose";
+import mongooseLeanVirtuals from "mongoose-lean-virtuals";
 
-interface TicketAttrs {
-	id: string;
+export interface ITicket {
+	id?: string;
 	title: string;
 	price: number;
+	version?: number;
 }
 
-export interface TicketDoc extends mongoose.Document {
-	id: string;
-	version: number;
-	title: string;
-	price: number;
+interface ITicketMethods {
 	isReserved(): Promise<boolean>;
 }
 
-interface TicketModel extends mongoose.Model<TicketDoc> {
-	build(attrs: TicketAttrs): TicketDoc;
-	findByEvent(event: {
+interface TicketModel extends Model<ITicket, {}, ITicketMethods> {
+	version: number;
+	findByReceivedEvent(event: {
 		id: string;
 		version: number;
-	}): Promise<TicketDoc | null>;
+	}): Promise<HydratedDocument<ITicket, ITicketMethods>>;
 }
 
-const ticketSchema = new mongoose.Schema(
+export const TicketSchema = new Schema(
 	{
 		title: {
 			type: String,
@@ -36,35 +34,33 @@ const ticketSchema = new mongoose.Schema(
 		},
 	},
 	{
+		optimisticConcurrency: true,
+		versionKey: "version",
 		toJSON: {
 			transform(doc, ret, options) {
 				ret.id = ret._id;
 				ret._id = undefined;
 			},
 		},
-		optimisticConcurrency: true,
 	},
 );
-ticketSchema.set("versionKey", "version");
 
-ticketSchema.statics.findByEvent = async (event: {
-	id: string;
-	version: number;
-}) => {
-	return Ticket.findOne({ _id: event.id, version: event.version - 1 });
-};
+TicketSchema.static(
+	"findByReceivedEvent",
+	async function (event: {
+		id: string;
+		version: number;
+	}) {
+		return await this.findOne({
+			_id: event.id,
+			version: event.version - 1,
+		});
+	},
+);
 
-ticketSchema.statics.build = (attrs: TicketAttrs) => {
-	return new Ticket({
-		_id: attrs.id,
-		title: attrs.title,
-		price: attrs.price,
-	});
-};
-
-ticketSchema.methods.isReserved = async function () {
+TicketSchema.method("isReserved", async function () {
 	const existingOrder = await Order.findOne({
-		ticket: this,
+		tickets: [this],
 		status: {
 			$in: [
 				OrderStatus.Created,
@@ -75,8 +71,10 @@ ticketSchema.methods.isReserved = async function () {
 	});
 
 	return !!existingOrder;
-};
+});
 
-const Ticket = mongoose.model<TicketDoc, TicketModel>("Ticket", ticketSchema);
+TicketSchema.plugin(mongooseLeanVirtuals);
 
-export { Ticket };
+const TicketModel = model<ITicket, TicketModel>("Ticket", TicketSchema);
+
+export class Ticket extends TicketModel {}

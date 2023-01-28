@@ -1,26 +1,24 @@
-import { ExpirationCompleteEvent } from "@zjs-tix/ticketingms-common-ts";
-import mongoose from "mongoose";
-import { Message } from "node-nats-streaming";
 import { Order, OrderStatus } from "../../../models/order";
 import { Ticket } from "../../../models/ticket";
 import { natsWrapper } from "../../../nats-wrapper";
 import { ExpirationCompleteListener } from "../expiration-complete-listener";
+import { ExpirationCompleteEvent } from "@zjs-tix/ticketingms-common-ts";
+import { Message } from "node-nats-streaming";
 
 const setup = async () => {
 	const listener = new ExpirationCompleteListener(natsWrapper.client);
 
-	const ticket = Ticket.build({
-		id: new mongoose.Types.ObjectId().toHexString(),
+	const ticket = new Ticket({
 		title: "test",
 		price: 100,
 	});
 	await ticket.save();
 
-	const order = Order.build({
+	const order = new Order({
 		userId: "123",
 		status: OrderStatus.Created,
 		expiresAt: new Date(),
-		ticket: ticket,
+		tickets: [ticket.id],
 	});
 	await order.save();
 

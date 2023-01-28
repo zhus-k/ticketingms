@@ -1,24 +1,29 @@
-import { NotAuthorizedError, NotFoundError, requireAuth } from "@zjs-tix/ticketingms-common-ts";
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
-import mongoose from "mongoose";
 import { Order } from "../models/order";
+import {
+	NotAuthorizedError,
+	NotFoundError,
+	requireAuth,
+} from "@zjs-tix/ticketingms-common-ts";
+import express, { Request, Response } from "express";
+import { checkSchema } from "express-validator";
+import { Types } from "mongoose";
 
 const router = express.Router();
 
 router.get(
 	"/api/orders/:orderId",
 	requireAuth,
-	[
-		body("orderId")
-			.notEmpty()
-			.custom((value) => {
-				return mongoose.Types.ObjectId.isValid(value);
-			})
-			.withMessage("TicketId must be valid"),
-	],
+	checkSchema({
+		orderId: {
+			notEmpty: true,
+			custom: { options: (value) => Types.ObjectId.isValid(value) },
+			errorMessage: "Order Id is not valid",
+		},
+	}),
 	async (req: Request, res: Response) => {
-		const order = await Order.findById(req.params.orderId).populate("ticket");
+		const order = await Order.findById(req.params.orderId)
+			.populate("tickets")
+			.lean({ virtuals: true });
 
 		if (!order) {
 			throw new NotFoundError();
@@ -28,7 +33,7 @@ router.get(
 			throw new NotAuthorizedError();
 		}
 
-		res.send(order);
+		res.send({ data: order });
 	},
 );
 

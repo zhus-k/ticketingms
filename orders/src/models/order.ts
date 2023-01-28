@@ -1,29 +1,18 @@
-import mongoose from "mongoose";
+import { Ticket } from "./ticket";
 import { OrderStatus } from "@zjs-tix/ticketingms-common-ts";
-import { TicketDoc } from "./ticket";
+import { Schema, model } from "mongoose";
+import { mongooseLeanVirtuals } from "mongoose-lean-virtuals";
 
 export { OrderStatus };
 
-interface OrderAttrs {
+export interface IOrder {
 	userId: string;
 	status: OrderStatus;
 	expiresAt: Date;
-	ticket: TicketDoc;
+	tickets: Ticket[];
 }
 
-interface OrderDoc extends mongoose.Document {
-	userId: string;
-	version: number;
-	status: OrderStatus;
-	expiresAt: Date;
-	ticket: TicketDoc;
-}
-
-interface OrderModel extends mongoose.Model<OrderDoc> {
-	build(attrs: OrderAttrs): OrderDoc;
-}
-
-const orderSchema = new mongoose.Schema(
+const OrderSchema = new Schema(
 	{
 		userId: {
 			type: String,
@@ -36,30 +25,26 @@ const orderSchema = new mongoose.Schema(
 			default: OrderStatus.Created,
 		},
 		expiresAt: {
-			type: mongoose.Schema.Types.Date,
+			type: Schema.Types.Date,
 			required: false,
 		},
-		ticket: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Ticket",
-		},
+		tickets: [{ type: Schema.Types.ObjectId, ref: "Ticket" }],
 	},
 	{
+		optimisticConcurrency: true,
+		versionKey: "version",
+		timestamps: true,
 		toJSON: {
 			transform(doc, ret, options) {
 				ret.id = ret._id;
 				ret._id = undefined;
 			},
 		},
-		optimisticConcurrency: true,
 	},
 );
-orderSchema.set("versionKey", "version");
 
-orderSchema.statics.build = (attrs: OrderAttrs) => {
-	return new Order(attrs);
-};
+OrderSchema.plugin(mongooseLeanVirtuals);
 
-const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
+const OrderModel = model<IOrder>("Order", OrderSchema);
 
-export { Order };
+export class Order extends OrderModel {}

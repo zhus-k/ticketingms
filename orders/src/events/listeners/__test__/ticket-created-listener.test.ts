@@ -1,20 +1,20 @@
-import { Subjects, TicketCreatedEvent } from "@zjs-tix/ticketingms-common-ts";
-import mongoose from "mongoose";
-import { Message } from "node-nats-streaming";
 import { Ticket } from "../../../models/ticket";
 import { natsWrapper } from "../../../nats-wrapper";
 import { TicketCreatedListener } from "../ticket-created-listener";
+import { TicketCreatedEvent } from "@zjs-tix/ticketingms-common-ts";
+import { Types } from "mongoose";
+import { Message } from "node-nats-streaming";
 
 const setup = async () => {
 	// create listener instance
 	const listener = new TicketCreatedListener(natsWrapper.client);
 	// fake data event
 	const data: TicketCreatedEvent["data"] = {
-		id: new mongoose.Types.ObjectId().toHexString(),
+		id: new Types.ObjectId().toHexString(),
 		version: 0,
 		title: "test",
 		price: 10,
-		userId: new mongoose.Types.ObjectId().toHexString(),
+		userId: new Types.ObjectId().toHexString(),
 	};
 
 	// @ts-ignore

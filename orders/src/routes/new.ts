@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import {
 	BadRequestError,
 	NotFoundError,
@@ -7,7 +7,7 @@ import {
 	validateRequest,
 } from "@zjs-tix/ticketingms-common-ts";
 import express, { Request, Response } from "express";
-import { body } from "express-validator";
+import { body, checkSchema } from "express-validator";
 import { Ticket } from "../models/ticket";
 import { Order } from "../models/order";
 import { OrderCreatedPublisher } from "../events/publishers/order-created-publisher";
@@ -20,29 +20,42 @@ const EXPIRATION_WINDOWS_SECONDS = 1 * 60;
 router.post(
 	"/api/orders",
 	requireAuth,
-	[
-		body("ticketId")
-			.notEmpty()
-			.custom((value) => {
-				return mongoose.Types.ObjectId.isValid(value);
-			})
-			.withMessage("TicketId must be provided"),
-	],
+	checkSchema({
+		tickets: {
+			isArray: true,
+			notEmpty: true,
+			errorMessage: "Tickets must be provided",
+		},
+		"tickets.*": {
+			custom: {
+				options: (value) => {
+					return Types.ObjectId.isValid(value);
+				},
+			},
+			errorMessage: "A Ticket Id is invalid",
+		},
+	}),
 	validateRequest,
 	async (req: Request, res: Response) => {
-		const { ticketId } = req.body;
+		const { tickets }: { tickets: string[] } = req.body;
 
-		const ticket = await Ticket.findById(ticketId);
+		const matchingTickets = await Ticket.find({
+			_id: {
+				$in: tickets,
+			},
+		});
 
-		// Find if ticket exists
-		if (!ticket) {
+		// Find if tickets exists
+		if (!(matchingTickets.length > 0)) {
 			throw new NotFoundError();
 		}
 
-		// Find if ticket is reserved in another order
-		const isReserved = await ticket.isReserved();
-		if (isReserved) {
-			throw new BadRequestError("Ticket is already reserved");
+		for (const ticket of matchingTickets) {
+			// Find if ticket is reserved in another order
+			const isReserved = await ticket.isReserved();
+			if (isReserved) {
+				throw new BadRequestError("A ticket is already reserved");
+			}
 		}
 
 		// Calculate order expiration date
@@ -50,11 +63,11 @@ router.post(
 		expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOWS_SECONDS);
 
 		// Create a record
-		const order = Order.build({
+		const order = new Order({
 			userId: req.currentUser!.id,
 			status: OrderStatus.Created,
 			expiresAt: expiration,
-			ticket: ticket,
+			tickets: matchingTickets,
 		});
 
 		await order.save();
@@ -62,17 +75,19 @@ router.post(
 		// Publish order:created event
 		new OrderCreatedPublisher(natsWrapper.client).publish({
 			id: order.id,
-			version: order.version,
+			version: order.get("version"),
 			status: order.status,
 			userId: order.userId,
 			expiresAt: order.expiresAt.toISOString(),
-			ticket: {
-				id: ticket.id,
-				price: ticket.price,
-			},
+			tickets: order.tickets.map((ticket) => {
+				return {
+					id: ticket.id,
+					price: ticket.price,
+				};
+			}),
 		});
 
-		res.status(201).send(order);
+		res.status(201).send({ data: order });
 	},
 );
 

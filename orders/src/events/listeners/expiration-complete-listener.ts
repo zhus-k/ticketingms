@@ -1,20 +1,19 @@
+import { Order } from "../../models/order";
+import { OrderCancelledPublisher } from "../publishers/order-cancelled-publisher";
+import { queueGroupName } from "./queue-group-name";
 import {
-	BadRequestError,
 	ExpirationCompleteEvent,
 	Listener,
 	OrderStatus,
 	Subjects,
 } from "@zjs-tix/ticketingms-common-ts";
 import { Message } from "node-nats-streaming";
-import { Order } from "../../models/order";
-import { OrderCancelledPublisher } from "../publishers/order-cancelled-publisher";
-import { queueGroupName } from "./queue-group-name";
 
 export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent> {
 	readonly subject = Subjects.ExpirationComplete;
 	queueGroupName = queueGroupName;
 	async onMessage(data: ExpirationCompleteEvent["data"], msg: Message) {
-		const order = await Order.findById(data.orderId).populate("ticket");
+		const order = await Order.findById(data.orderId).populate("tickets");
 
 		if (!order) {
 			throw new Error("Order not found");
@@ -28,11 +27,11 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
 		await order.save();
 
 		await new OrderCancelledPublisher(this.client).publish({
-			version: order.version,
+			version: order.get("version"),
 			id: order.id,
-			ticket: {
-				id: order.ticket.id,
-			},
+			tickets: order.tickets.map((ticket) => {
+				return { id: ticket.id };
+			}),
 		});
 
 		msg.ack();

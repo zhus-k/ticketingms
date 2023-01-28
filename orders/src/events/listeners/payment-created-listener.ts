@@ -1,3 +1,5 @@
+import { Order } from "../../models/order";
+import { queueGroupName } from "./queue-group-name";
 import {
 	Listener,
 	NotFoundError,
@@ -6,8 +8,6 @@ import {
 	Subjects,
 } from "@zjs-tix/ticketingms-common-ts";
 import { Message } from "node-nats-streaming";
-import { Order } from "../../models/order";
-import { queueGroupName } from "./queue-group-name";
 
 export class PaymentCreatedListener extends Listener<PaymentCreatedEvent> {
 	readonly subject = Subjects.PaymentCreated;

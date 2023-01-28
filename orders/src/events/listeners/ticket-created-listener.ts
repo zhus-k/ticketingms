@@ -1,18 +1,19 @@
-import { Message } from "node-nats-streaming";
-import { Listener, TicketCreatedEvent, Subjects } from "@zjs-tix/ticketingms-common-ts";
 import { Ticket } from "../../models/ticket";
 import { queueGroupName } from "./queue-group-name";
+import {
+	Listener,
+	Subjects,
+	TicketCreatedEvent,
+} from "@zjs-tix/ticketingms-common-ts";
+import { Message } from "node-nats-streaming";
 
 export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
 	readonly subject = Subjects.TicketCreated;
 	queueGroupName = queueGroupName;
-	async onMessage(
-		data: TicketCreatedEvent["data"],
-		msg: Message,
-	): Promise<void> {
+	async onMessage(data: TicketCreatedEvent["data"], msg: Message) {
 		const { id, title, price } = data;
 
-		const ticket = Ticket.build({ id, title, price });
+		const ticket = await Ticket.create({ _id: id, title, price });
 		await ticket.save();
 
 		msg.ack();
